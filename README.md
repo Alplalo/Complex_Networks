@@ -1,7 +1,5 @@
 # XAXES COMPLEXES
 
-
-
 ## Makefile
 
 El Makefile incluido automatiza varias tareas relacionadas con la compilación y ejecución de los programas. Aquí hay una descripción de los comandos más importantes:
