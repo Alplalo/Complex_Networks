@@ -30,6 +30,6 @@ Este comando elimina el archivo ejecutable y `Gowalla_edges_new.txt` en `Linux`.
 
 
 
-### <span style="color:purple;">make help</span>
+### <font color="purple">make help</font>
 
 Este comando muestra la descripción de los comandos del Makefile.
