@@ -41,32 +41,31 @@ def contar(filename):
 
     return vecinos, k_i
 
+def crear_vecinos(V, D):
+    vecinos = {}
+    start = 0
+    for i in range(len(D)):
+        vecinos[i] = V[start:start+D[i]]
+        start += D[i]
+        # print(i)
+    return vecinos
 
 # Programa principal
 V, D = contar(filename)
+vecinos = crear_vecinos(V, D)
 
-# Degree distribution: P(k)
-def degree_distribution(V, D):
-    # Crear diccionario de grados
-    k = {}
-    for i in range(len(V)):
-        if V[i] not in k:
-            k[V[i]] = D[i]
-        else:
-            k[V[i]] += D[i]
+# # Crear vecinos.txt
+# print('Creando vecinos.txt...')
+# vecinos_file = open('vecinos.txt', 'w')
+# for i in range(len(vecinos)):
+#     vecinos_file.write(str(i) + ' ' + ' '.join(vecinos[i]) + '\n')
+# vecinos_file.close()
+# print('vecinos.txt creado.')
 
-    # Crear lista de grados
-    k_list = list(k.keys())
-    k_list.sort()
 
-    # Crear lista de P(k)
-    P_k = []
-    for i in k_list:
-        P_k.append(k[i])
 
-    # Normalizar P(k)
-    P_k = [i/sum(P_k) for i in P_k]
 
-    return k_list, P_k
+
+
     
 
