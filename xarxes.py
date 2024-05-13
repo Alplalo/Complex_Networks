@@ -44,5 +44,29 @@ def contar(filename):
 
 # Programa principal
 V, D = contar(filename)
+
+# Degree distribution: P(k)
+def degree_distribution(V, D):
+    # Crear diccionario de grados
+    k = {}
+    for i in range(len(V)):
+        if V[i] not in k:
+            k[V[i]] = D[i]
+        else:
+            k[V[i]] += D[i]
+
+    # Crear lista de grados
+    k_list = list(k.keys())
+    k_list.sort()
+
+    # Crear lista de P(k)
+    P_k = []
+    for i in k_list:
+        P_k.append(k[i])
+
+    # Normalizar P(k)
+    P_k = [i/sum(P_k) for i in P_k]
+
+    return k_list, P_k
     
 
