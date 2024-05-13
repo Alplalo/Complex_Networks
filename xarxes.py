@@ -54,13 +54,6 @@ def crear_vecinos(V, D):
 V, D = contar(filename)
 vecinos = crear_vecinos(V, D)
 
-# # Crear vecinos.txt
-# print('Creando vecinos.txt...')
-# vecinos_file = open('vecinos.txt', 'w')
-# for i in range(len(vecinos)):
-#     vecinos_file.write(str(i) + ' ' + ' '.join(vecinos[i]) + '\n')
-# vecinos_file.close()
-# print('vecinos.txt creado.')
 
 
 
