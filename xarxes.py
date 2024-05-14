@@ -2,10 +2,18 @@
 # ------------ ASSIGNMENT 1 ----------------
 # ----------- ALBERT PLAZAS ----------------
 
+############# Librerias ################
 import sys
+import numpy as np
+import matplotlib.pyplot as plt
 
+############# Argumentos ################
 filename = sys.argv[1] # Guardar el nombre del archivo de datos
 
+
+############# Funciones ################
+
+# Función para contar el numero de nodos, aristas y grado medio
 def contar(filename):
 
     # Leer archivo de datos
@@ -41,6 +49,7 @@ def contar(filename):
 
     return vecinos, k_i
 
+# Dicción de vecinos, donde la clave es el nodo y el valor es una lista con los vecinos
 def crear_vecinos(V, D):
     vecinos = {}
     start = 0
@@ -50,11 +59,36 @@ def crear_vecinos(V, D):
         # print(i)
     return vecinos
 
-# Programa principal
+# Calcular degree distribution
+def deggree_distribution(D):
+    P_K = np.zeros(max(D)+1)
+    for i in D:
+        P_K[i] += 1
+
+    P_K = P_K/sum(P_K)
+    return P_K
+
+
+
+
+############ Programa principal #############
 V, D = contar(filename)
 vecinos = crear_vecinos(V, D)
+P_K = deggree_distribution(D)
 
 
+
+
+############# Plots ################
+
+# Plot log P_K vs log k
+plt.plot(range(len(P_K)), P_K, 'o')
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('k')
+plt.ylabel('P(k)')
+plt.title('Degree distribution')
+plt.savefig('degree_distribution.png')
 
 
 
