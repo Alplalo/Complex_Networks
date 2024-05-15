@@ -8,6 +8,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 ############# Argumentos ################
 
 filename = sys.argv[1] # Guardar el nombre del archivo de datos
@@ -79,12 +80,11 @@ def cumulative_degree_distribution(P_K):
     return P_K_cum
 
 # Calcular Average nearest neighbor degree
-def average_nearest_neighbor_degree(V, D):
+def average_nearest_neighbor_degree(vecinos, D):
     k_nn = np.zeros(len(D))
     for i in range(len(D)):
-        k_nn[i] = np.mean([D[j] for j in V[i]])
+        k_nn[i] = sum([D[j] for j in vecinos[i]])/D[i]
     return k_nn
-
 
 
 ############ Programa principal #############
@@ -95,14 +95,18 @@ P_K = deggree_distribution(D)
 P_K_cum = cumulative_degree_distribution(P_K)
 k_nn = average_nearest_neighbor_degree(vecinos, D)
 
+
+
+
+
 ############ Outputs ################
 
-open_file = open('degree_distribution.dat', 'w')
+open_file = open('outputs/degree_distribution.dat', 'w')
 for i in range(len(P_K)):
     open_file.write('{} {}\n'.format(i, P_K[i]))
 open_file.close()
 
-open_file = open('cumulative_degree_distribution.dat', 'w')
+open_file = open('outputs/cumulative_degree_distribution.dat', 'w')
 for i in range(len(P_K_cum)-1):
     open_file.write('{} {}\n'.format(i, P_K_cum[i]))
 open_file.close()
@@ -120,7 +124,7 @@ plt.xscale('log')
 plt.xlabel('k')
 plt.ylabel('P(k)')
 plt.title('Degree distribution')
-plt.savefig('degree_distribution.png')
+plt.savefig('plots/degree_distribution.png')
 plt.close()
 
 # Plot log P_K_cum vs log k
@@ -130,7 +134,7 @@ plt.xscale('log')
 plt.xlabel('k')
 plt.ylabel('P_cum(k)')
 plt.title('Cumulative degree distribution')
-plt.savefig('cumulative_degree_distribution.png')
+plt.savefig('plots/cumulative_degree_distribution.png')
 plt.close()
 
 # Plot k_nn vs k
@@ -138,7 +142,7 @@ plt.plot(D, k_nn, '.', color='black')
 plt.xlabel('k')
 plt.ylabel('k_nn')
 plt.title('Average nearest neighbor degree')
-plt.savefig('average_nearest_neighbor_degree.png')
+plt.savefig('plots/average_nearest_neighbor_degree.png')
 plt.close()
 
 

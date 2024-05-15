@@ -1,4 +1,4 @@
-INPUT_FILE = Gowalla_edges.txt
+INPUT_FILE = redes/Gowalla_edges.txt
 INPUT_FILE_NEW = $(INPUT_FILE:.txt=_new.txt)
 FFLAGS = -Wall -Wextra -O2
 
@@ -15,11 +15,14 @@ xfor: $(INPUT_FILE_NEW) xarxes_for.f90
 xpy: $(INPUT_FILE_NEW) xarxes.py
 	python3 xarxes.py $(INPUT_FILE_NEW)
 
+plot: script.gp
+	gnuplot script.gp
+
 cleanw:
-	del /F /Q ejecutable.exe $(INPUT_FILE_NEW)
+	del /F /Q ejecutable.exe *.dat 
 
 clean:
-	rm -f ejecutable $(INPUT_FILE_NEW)
+	rm -f ejecutable *.dat
 
 help:
 	@echo "xfor - Ejecuta 'python3 retocar.py' en $(INPUT_FILE), luego compila 'xarxes_for.f90' con gfortran y ejecuta el archivo resultante en $(INPUT_FILE_NEW)"
