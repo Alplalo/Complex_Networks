@@ -41,9 +41,8 @@ def contar(filename):
             k_i.append(k_n)
             k_n = 1
 
-    # Verificar el ultimo elemento
-    if first_column[-1] != first_column[-2]: # Si el ultimo elemento es diferente al penultimo, añadir su k_i a la lista 
-        k_i.append(k_n)
+    # Añadir el ultimo k_i 
+    k_i.append(k_n)
 
     # Print de los resultados
     print('Nodes: ',len(k_i)) # Numero de nodos
@@ -79,11 +78,18 @@ def cumulative_degree_distribution(P_K):
         P_K_cum[i] = 1 - P_K_cum[i]
     return P_K_cum
 
-# Calcular Average nearest neighbor degree
+# Calcular Average nearest neighbor degree, suma de vecinos de todos los nodos con k degrees
 def average_nearest_neighbor_degree(vecinos, D):
-    k_nn = np.zeros(len(D))
+    sumas = {}
+    conteos = {}
     for i in range(len(D)):
-        k_nn[i] = sum([D[j] for j in vecinos[i]])/D[i]
+        grado = D[i]
+        if grado not in sumas:
+            sumas[grado] = 0
+            conteos[grado] = 0
+        sumas[grado] += sum([D[j] for j in vecinos[i]])/grado
+        conteos[grado] += 1
+    k_nn = {grado: suma / conteos[grado] for grado, suma in sumas.items()}
     return k_nn
 
 
@@ -138,7 +144,9 @@ plt.savefig('plots/cumulative_degree_distribution.png')
 plt.close()
 
 # Plot k_nn vs k
-plt.plot(D, k_nn, '.', color='black')
+plt.plot(k_nn.keys(), k_nn.values(), 'o', color='black')
+plt.yscale('log')
+plt.xscale('log')
 plt.xlabel('k')
 plt.ylabel('k_nn')
 plt.title('Average nearest neighbor degree')

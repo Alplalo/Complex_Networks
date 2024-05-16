@@ -1,4 +1,4 @@
-INPUT_FILE = networks/Gowalla_edges.txt
+INPUT_FILE = networks/dolphins.txt
 INPUT_FILE_NEW = $(INPUT_FILE:.txt=_new.txt)
 FFLAGS = -Wall -Wextra -O2
 

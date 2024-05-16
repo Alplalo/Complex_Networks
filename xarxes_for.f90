@@ -1,6 +1,6 @@
-! ############# XARXES COMPLEXES ################
-! ############### ASSIGNMENT 1 ###################
-! ############## ALBERT PLAZAS ###################
+! -------------- XARXES COMPLEXES ----------------
+! --------------- ASSIGNMENT 1 -------------------
+! -------------- ALBERT PLAZAS -------------------
 
 PROGRAM xarxes_assignment_1
     implicit none
