@@ -1,5 +1,7 @@
-INPUT_FILE = networks/dolphins.txt
+INPUT = dolphins.txt
+INPUT_FILE = networks/$(INPUT)
 INPUT_FILE_NEW = $(INPUT_FILE:.txt=_new.txt)
+DIR = $(INPUT:.txt=_new)
 FFLAGS = -Wall -Wextra -O2
 
 $(INPUT_FILE_NEW): $(INPUT_FILE) retocar.py
@@ -13,7 +15,10 @@ xfor: $(INPUT_FILE_NEW) xarxes_for.f90
 	./ejecutable $(INPUT_FILE_NEW)
 
 xpy: $(INPUT_FILE_NEW) xarxes.py
+	cmd /C if not exist plots\\$(DIR) md plots\\$(DIR)
+	cmd /C if not exist outputs\\$(DIR) md outputs\\$(DIR)
 	python3 xarxes.py $(INPUT_FILE_NEW)
+
 
 plot: script.gp
 	gnuplot script.gp
