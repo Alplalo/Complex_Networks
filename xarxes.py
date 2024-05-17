@@ -141,8 +141,10 @@ k_nn = average_nearest_neighbor_degree(vecinos, D)
 C,triangles = clustering_coefficient(vecinos, D)
 C_k = clustering_coefficient_per_degree(C, D)
 # k = diferentes_k(D)
-# print(k)
-print(np.sum(triangles)/2)
+
+
+# Print de los resultados
+print('Triangulos: ',np.sum(triangles)/2)
 
 
 # Nombre carpeta datos y plots
