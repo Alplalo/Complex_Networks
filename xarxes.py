@@ -120,8 +120,8 @@ def clustering_coefficient_per_degree(C, D):
         C_k[k] /= D.count(k)
     return C_k
 
-
-
+def average_clustering_coefficient(C):
+    return sum(C.values())/len(C)
 
 def diferentes_k(D):
     k = set(D) # Quitar repetidos
@@ -140,11 +140,12 @@ P_K_cum = cumulative_degree_distribution(P_K)
 k_nn = average_nearest_neighbor_degree(vecinos, D)
 C,triangles = clustering_coefficient(vecinos, D)
 C_k = clustering_coefficient_per_degree(C, D)
-# k = diferentes_k(D)
+C_avg = average_clustering_coefficient(C)
 
 
 # Print de los resultados
 print('Triangulos: ',np.sum(triangles)/2)
+print('Average clustering coefficient: {:.4f}'.format(C_avg))
 
 
 # Nombre carpeta datos y plots
