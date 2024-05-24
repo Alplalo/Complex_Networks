@@ -121,7 +121,7 @@ def clustering_coefficient_per_degree(C, D):
     return C_k
 
 def average_clustering_coefficient(C):
-    return sum(C.values())/len(C)
+    return sum(C.values())/(len(C))
 
 def diferentes_k(D):
     k = set(D) # Quitar repetidos
@@ -145,7 +145,7 @@ C_avg = average_clustering_coefficient(C)
 
 # Print de los resultados
 print('Triangulos: ',np.sum(triangles)/2)
-print('Average clustering coefficient: {:.4f}'.format(C_avg))
+print('Average clustering coefficient: {:.4f}'.format(C_avg/2))
 
 
 # Nombre carpeta datos y plots
