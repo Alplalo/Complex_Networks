@@ -131,94 +131,95 @@ def diferentes_k(D):
 
 
 
+if __name__ == "__main__":
 ############ Programa principal #############
 
-V, D = contar(filename)
-vecinos = crear_vecinos(V, D)
-P_K = deggree_distribution(D)
-P_K_cum = cumulative_degree_distribution(P_K)
-k_nn = average_nearest_neighbor_degree(vecinos, D)
-C,triangles = clustering_coefficient(vecinos, D)
-C_k = clustering_coefficient_per_degree(C, D)
-C_avg = average_clustering_coefficient(C)
+    V, D = contar(filename)
+    vecinos = crear_vecinos(V, D)
+    P_K = deggree_distribution(D)
+    P_K_cum = cumulative_degree_distribution(P_K)
+    k_nn = average_nearest_neighbor_degree(vecinos, D)
+    C,triangles = clustering_coefficient(vecinos, D)
+    C_k = clustering_coefficient_per_degree(C, D)
+    C_avg = average_clustering_coefficient(C)
 
 
-# Print de los resultados
-print('Triangulos: ',np.sum(triangles)/2)
-print('Average clustering coefficient: {:.4f}'.format(C_avg/2))
+    # Print de los resultados
+    print('Triangulos: ',np.sum(triangles)/2)
+    print('Average clustering coefficient: {:.4f}'.format(C_avg/2))
 
 
-# Nombre carpeta datos y plots
+    # Nombre carpeta datos y plots
 
-filename = filename.split(".")[0]
-filename = filename.split("/")[1]
-
-
-############ Outputs ################
-
-open_file = open(f'outputs/{filename}/degree_distribution.dat', 'w')
-for i in range(len(P_K)):
-    open_file.write('{} {}\n'.format(i, P_K[i]))
-open_file.close()
-
-open_file = open(f'outputs/{filename}/cumulative_degree_distribution.dat', 'w')
-for i in range(len(P_K_cum)-1):
-    open_file.write('{} {}\n'.format(i, P_K_cum[i]))
-open_file.close()
-
-open_file = open(f'outputs/{filename}/average_nearest_neighbor_degree.dat', 'w')
-for k, nn in k_nn.items():
-    open_file.write('{} {}\n'.format(k, nn))
-open_file.close()
-
-open_file = open(f'outputs/{filename}/clustering_coefficient.dat', 'w')
-for i, c in C.items():
-    open_file.write('{} {}\n'.format(i, c))
-open_file.close()
+    filename = filename.split(".")[0]
+    filename = filename.split("/")[1]
 
 
+    ############ Outputs ################
 
-############# Plots ################
+    open_file = open(f'outputs/{filename}/degree_distribution.dat', 'w')
+    for i in range(len(P_K)):
+        open_file.write('{} {}\n'.format(i, P_K[i]))
+    open_file.close()
 
-# Plot log P_K vs log k
-plt.plot(range(len(P_K)-1), P_K[0:-1], 'o', color='black')
-plt.yscale('log')
-plt.xscale('log')
-plt.xlabel('k')
-plt.ylabel('P(k)')
-plt.title('Degree distribution')
-plt.savefig(f'plots/{filename}/degree_distribution.png')
-plt.close()
+    open_file = open(f'outputs/{filename}/cumulative_degree_distribution.dat', 'w')
+    for i in range(len(P_K_cum)-1):
+        open_file.write('{} {}\n'.format(i, P_K_cum[i]))
+    open_file.close()
 
-# Plot log P_K_cum vs log k
-plt.plot(range(len(P_K_cum)-1), P_K_cum[0:-1], 'o', color='black')
-plt.yscale('log')
-plt.xscale('log')
-plt.xlabel('k')
-plt.ylabel('P_cum(k)')
-plt.title('Cumulative degree distribution')
-plt.savefig(f'plots/{filename}/cumulative_degree_distribution.png')
-plt.close()
+    open_file = open(f'outputs/{filename}/average_nearest_neighbor_degree.dat', 'w')
+    for k, nn in k_nn.items():
+        open_file.write('{} {}\n'.format(k, nn))
+    open_file.close()
 
-# Plot k_nn vs k
-plt.plot(k_nn.keys(), k_nn.values(), 'o', color='black')
-plt.yscale('log')
-plt.xscale('log')
-plt.xlabel('k')
-plt.ylabel('k_nn')
-plt.title('Average nearest neighbor degree')
-plt.savefig(f'plots/{filename}/average_nearest_neighbor_degree.png')
-plt.close()
+    open_file = open(f'outputs/{filename}/clustering_coefficient.dat', 'w')
+    for i, c in C.items():
+        open_file.write('{} {}\n'.format(i, c))
+    open_file.close()
 
-# Plot C_k vs k
-plt.plot(C_k.keys(), C_k.values(), 'o', color='black')
-plt.yscale('log')
-plt.xscale('log')
-plt.xlabel('k')
-plt.ylabel('C(k)')
-plt.title('Clustering coefficient per degree')
-plt.savefig(f'plots/{filename}/clustering_coefficient.png')
-plt.close()
+
+
+    ############# Plots ################
+
+    # Plot log P_K vs log k
+    plt.plot(range(len(P_K)-1), P_K[0:-1], 'o', color='black')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('k')
+    plt.ylabel('P(k)')
+    plt.title('Degree distribution')
+    plt.savefig(f'plots/{filename}/degree_distribution.png')
+    plt.close()
+
+    # Plot log P_K_cum vs log k
+    plt.plot(range(len(P_K_cum)-1), P_K_cum[0:-1], 'o', color='black')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('k')
+    plt.ylabel('P_cum(k)')
+    plt.title('Cumulative degree distribution')
+    plt.savefig(f'plots/{filename}/cumulative_degree_distribution.png')
+    plt.close()
+
+    # Plot k_nn vs k
+    plt.plot(k_nn.keys(), k_nn.values(), 'o', color='black')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('k')
+    plt.ylabel('k_nn')
+    plt.title('Average nearest neighbor degree')
+    plt.savefig(f'plots/{filename}/average_nearest_neighbor_degree.png')
+    plt.close()
+
+    # Plot C_k vs k
+    plt.plot(C_k.keys(), C_k.values(), 'o', color='black')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.xlabel('k')
+    plt.ylabel('C(k)')
+    plt.title('Clustering coefficient per degree')
+    plt.savefig(f'plots/{filename}/clustering_coefficient.png')
+    plt.close()
 
 
 

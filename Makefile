@@ -1,4 +1,4 @@
-INPUT = astro.txt
+INPUT = dolphins.txt
 INPUT_FILE = networks/$(INPUT)
 INPUT_FILE_NEW = $(INPUT_FILE:.txt=_new.txt)
 DIR = $(INPUT:.txt=_new)
@@ -18,6 +18,9 @@ xpy: $(INPUT_FILE_NEW) xarxes.py
 	cmd /C if not exist plots\\$(DIR) md plots\\$(DIR)
 	cmd /C if not exist outputs\\$(DIR) md outputs\\$(DIR)
 	python3 xarxes.py $(INPUT_FILE_NEW)
+
+a5: $(INPUT_FILE_NEW) assignment_5.py
+	python3 assignment_5.py $(INPUT_FILE_NEW)
 
 
 plot: script.gp
