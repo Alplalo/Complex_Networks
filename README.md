@@ -4,7 +4,7 @@ Este proyecto se centra en el procesamiento y análisis de redes utilizando dife
 
 ## Estructura del Proyecto
 
-- `xarxes.txt`: Archivo de entrada con datos de redes de delfines.
+- `xarxes.txt`: Archivo de entrada con datos de redes.
 - `networks/`: Directorio que contiene el archivo de entrada.
 - `retocar.py`: Script de Python para procesar el archivo de entrada.
 - `xarxes_for.f90`: Código Fortran para análisis de redes.
@@ -22,7 +22,7 @@ El `Makefile` contiene varias reglas para automatizar tareas. A continuación se
 
 #### `$(INPUT_FILE_NEW)`
 
-Esta regla ejecuta el script `retocar.py` para procesar el archivo de entrada `dolphins.txt` y generar un nuevo archivo con sufijo `_new.txt`.
+Esta regla ejecuta el script `retocar.py` para procesar el archivo de entrada `xarxes.txt` y generar un nuevo archivo con sufijo `_new.txt`.
 
 ```sh
 make $(INPUT_FILE_NEW)
