@@ -1,16 +1,17 @@
 import sys
 import os
 import numpy as np
-from xarxes import contar
 
 
-intentos = 100
+# ------------------ Argumentos ------------------
+filename = sys.argv[1]
 
+# ------------------ Funciones ------------------
 
-def assignment_5(intentos):
+def assignment_5(intentos,filename=sys.argv[1]):
     filename = sys.argv[1] # Guardar el nombre del archivo de datos
 
-    vecinos, k_i = contar(filename)
+    k_i = contar(filename)
 
 
     # Create a list of nodes
@@ -19,27 +20,38 @@ def assignment_5(intentos):
         for j in range(k_i[i]):
             nodes.append(i)
 
-    print(len(nodes))
+    # print(len(nodes))
 
+    back_nodes = nodes.copy()
     # Create a list of edges
     edges = []
     while len(nodes) > 1:
-        # Choose two nodes randomly
         i = np.random.randint(0, len(nodes))
         j = np.random.randint(0, len(nodes))
-        # If the nodes are different and the edge does not exist
-        if i != j and i < len(nodes) and j < len(nodes) and (nodes[i], nodes[j]) not in edges and (nodes[j], nodes[i]) not in edges and nodes[i] != nodes[j]:
-            # Add the edge
-            edges.append((nodes[i], nodes[j]))
-            # Remove the nodes from the list
+        # print(i,j,len(nodes),nodes[i],nodes[j])
+        if ((len(nodes) == 4 or len(nodes) == 2) and i != j and nodes[i] == nodes[j]) or ((len(nodes) == 4 or len(nodes) == 2) and (frozenset([nodes[i], nodes[j]]) in set(map(frozenset, edges)))):
+            nodes = back_nodes.copy()
+            edges = []
+            continue
+        if i != j and i <= len(nodes) and j <= len(nodes) and frozenset([nodes[i], nodes[j]]) not in set(map(frozenset, edges)) and nodes[i] != nodes[j]:
+            edges.append([nodes[i], nodes[j]])
             nodes.pop(max(i, j))
             nodes.pop(min(i, j))
+    
+    # print(len(edges))
+    edges = list(map(list, set(map(frozenset, edges))))
 
+    # Comprobar si hay nodos repetidos
+    print('enlaces antes',len(edges))
+    # set_edges = set(edges)
+    # edges = list(set_edges)
+    # print(type(edges))
+    
+    # Escribir archivo
     write_file = open("assignment_5.txt", "w")
     for edge in edges:
         write_file.write(str(edge[0]) + "\t" + str(edge[1]) + "\n")
     write_file.close()
-
 
     ####### Copia de programa RETOCAR #######
     # ------------------ Argumentos ------------------
@@ -50,9 +62,6 @@ def assignment_5(intentos):
     openfile = open(filename, 'r')
     lines = openfile.readlines()
     openfile.close()
-
-    # Eliminar el archivo de datos
-    os.remove(filename)
 
     # ------------------ Retocar ------------------
 
@@ -95,20 +104,61 @@ def assignment_5(intentos):
 
     # Guardo lo que hay delante del . en el nombre del archivo para el nuevo archivo
     filename = filename.split('.')[0] # Guardar el nombre del archivo sin la extension
-
+    print('enlaces despues',len(lines))
     # Escritura de archivo
     openfile = open(f'{filename}_new_{str(intentos).zfill(4)}.txt', 'w')
     openfile.writelines(lines)
     openfile.close()
 
     # Si no existe la carpeta assignment_5, la crea
-    if not os.path.exists('assignment_5'):
-        os.makedirs('assignment_5')
+    if not os.path.exists('CMs'):
+        os.makedirs('CMs')
 
     # Mover archivo a carpeta assignment_5
-    os.rename(f'{filename}_new_{str(intentos).zfill(4)}.txt', f'assignment_5/{filename}_new_{str(intentos).zfill(4)}.txt')
+    os.rename(f'{filename}_new_{str(intentos).zfill(4)}.txt', f'CMs/CMnet_{str(intentos).zfill(4)}.txt')
+    os.remove('assignment_5.txt')
 
+def contar(filename):
+
+    # Leer archivo de datos
+    open_file = open(filename, "r")
+    lines = open_file.readlines()
+    open_file.close()
+
+    # print('Numero de lineas:', len(lines)) # Numero de lineas en el archivo
+
+    # Dividir cada linea en columnas y guardar la primera columna
+    first_column = [line.split()[0] for line in lines] # Guardar la primera columna de cada linea en una lista
+
+    # Inicializar k's
+    k_i = [] # Lista para guardar la suma de k de cada nodo
+    k_n = 1
+
+    # Bucle crear vector k_i
+    for i in range(len(first_column) - 1): # Recorrer todas las columnas menos la ultima, añadir su k_i a la lista si es diferente al siguiente
+        if first_column[i] == first_column[i+1]:
+            k_n = k_n + 1
+        else:
+            k_i.append(k_n)
+            k_n = 1
+
+    # Añadir el ultimo k_i 
+    k_i.append(k_n)
+
+    # # Print de los resultados
+    # print('Nodes: ',len(k_i)) # Numero de nodos
+    # print('E :', 0.5*sum(k_i)) # Numero de aristas
+    # print('<k> : {:.4f}'.format(sum(k_i)/len(k_i))) # Grado medio
+
+    return k_i
+
+
+
+## Ejecutar el programa
+
+intentos = 5 # Numero de CM a realizar
 
 for i in range(intentos):
     assignment_5(i+1)
+    print(f'CM {i+1}/{intentos} completada.')
     
