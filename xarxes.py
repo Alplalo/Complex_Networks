@@ -123,6 +123,12 @@ def clustering_coefficient_per_degree(C, D):
 def average_clustering_coefficient(C):
     return sum(C.values())/(len(C))
 
+# def average_clustering_coefficient(C):
+#     non_zero_C = [c for c in C.values() if c > 0]
+#     if len(non_zero_C) == 0:
+#         return 0
+#     return sum(non_zero_C) / len(non_zero_C)
+
 def diferentes_k(D):
     k = set(D) # Quitar repetidos
     k = list(k)

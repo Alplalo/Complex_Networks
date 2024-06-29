@@ -1,7 +1,7 @@
 import sys
 import os
 import numpy as np
-
+import time
 
 # ------------------ Argumentos ------------------
 filename = sys.argv[1]
@@ -23,23 +23,27 @@ def assignment_5(intentos,filename=sys.argv[1]):
     # print(len(nodes))
 
     back_nodes = nodes.copy()
-    # Create a list of edges
-    edges = []
+    edges = set()
+
     while len(nodes) > 1:
         i = np.random.randint(0, len(nodes))
         j = np.random.randint(0, len(nodes))
-        # print(i,j,len(nodes),nodes[i],nodes[j])
-        if ((len(nodes) == 4 or len(nodes) == 2) and i != j and nodes[i] == nodes[j]) or ((len(nodes) == 4 or len(nodes) == 2) and (frozenset([nodes[i], nodes[j]]) in set(map(frozenset, edges)))):
-            nodes = back_nodes.copy()
-            edges = []
-            continue
-        if i != j and i <= len(nodes) and j <= len(nodes) and frozenset([nodes[i], nodes[j]]) not in set(map(frozenset, edges)) and nodes[i] != nodes[j]:
-            edges.append([nodes[i], nodes[j]])
-            nodes.pop(max(i, j))
-            nodes.pop(min(i, j))
-            print(len(nodes))
-    # print(len(edges))
-    edges = list(map(list, set(map(frozenset, edges))))
+        
+        if i != j:
+            edge = frozenset([nodes[i], nodes[j]])
+            if ((len(nodes) in {2, 4} and nodes[i] == nodes[j]) or 
+                (len(nodes) in {2, 4} and edge in edges)):
+                nodes = back_nodes.copy()
+                edges.clear()
+                continue
+            
+            if edge not in edges and nodes[i] != nodes[j]:
+                edges.add(edge)
+                nodes.pop(max(i, j))
+                nodes.pop(min(i, j))
+                # print(len(nodes))
+
+    edges = [list(edge) for edge in edges]
 
     # Comprobar si hay nodos repetidos
     print('enlaces antes',len(edges))
@@ -156,9 +160,15 @@ def contar(filename):
 
 ## Ejecutar el programa
 
+
+inicio = time.time()
+
 intentos = 5 # Numero de CM a realizar
 
 for i in range(intentos):
     assignment_5(i+1)
     print(f'CM {i+1}/{intentos} completada.')
     
+final = time.time()
+
+print('Tiempo de ejecucion:',final-inicio)
