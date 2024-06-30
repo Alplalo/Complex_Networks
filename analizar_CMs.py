@@ -199,13 +199,11 @@ for filename in files:
 
 
 # Calcular el promedio de k_nn y C_k
-# Los valores de k_nn y C_K se dividen entre el numero de redes
 k_nn = {k: v / num_net for k, v in k_nn_sum.items()}
 C_k = {k: v / num_net for k, v in C_k_sum.items()}
 
 k_nn = dict(sorted(k_nn.items())) # Ordenar claves de k_nn de menor a mayor
 C_k = dict(sorted(C_k.items())) # Ordenar claves de C_k de menor a mayor
-
 
 # Analizar red de referencia
 print('Red de referencia')
@@ -221,6 +219,7 @@ C_origen,avg_C_origen = clustering_coefficient(vecinos, D)
 C_k_origen = clustering_coefficient_per_degree(C_origen, D)
 print('-------------------------------------------------------------------------------------------------')
 print('-------------------------------------------------------------------------------------------------')
+
 # Analizar 1 CM
 print('1 CM')
 os.chdir('CMs')
