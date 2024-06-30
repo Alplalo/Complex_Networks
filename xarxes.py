@@ -67,15 +67,31 @@ def deggree_distribution(D):
     for i in D:
         P_K[i] += 1
 
-    P_K = P_K/sum(P_K)
+    P_K = P_K/sum(P_K)  # Normalización inicial por la suma total para obtener probabilidades
+    
+    # Encontrar el valor máximo
+    max_value = max(P_K)
+    
+    # Normalizar los valores por el valor máximo
+    if max_value > 0:
+        P_K = P_K / max_value
+    
     return P_K
 
 # Calcular Cumulative degree distribution
 def cumulative_degree_distribution(P_K):
     P_K_cum = np.zeros(len(P_K))
-    for i in range(len(P_K)): 
-        P_K_cum[i] = sum(P_K[:i+1]) # Calcular la suma acumulada de P_K
+    for i in range(len(P_K)):
+        P_K_cum[i] = sum(P_K[:i+1])  # Calcular la suma acumulada de P_K
         P_K_cum[i] = 1 - P_K_cum[i]
+    
+    # Encontrar el valor máximo
+    max_value = max(P_K_cum)
+    
+    # Normalizar los valores por el valor máximo
+    if max_value > 0:
+        P_K_cum = P_K_cum / max_value
+    
     return P_K_cum
 
 # Calcular Average nearest neighbor degree, suma de vecinos de todos los nodos con k degrees
@@ -137,6 +153,16 @@ def clustering_coefficient_per_degree(C, D):
         C_k[D[i]] += C[i]
     for k in C_k:
         C_k[k] /= D.count(k)
+    
+    # Encontrar el valor máximo
+    max_value = max(C_k.values())
+    
+    # Normalizar los valores por el valor máximo
+    for k in C_k:
+        if C_k[k] != 0:
+            C_k[k] /= max_value
+        else:
+            C_k[k] = 0
     return C_k
 
 
@@ -152,7 +178,7 @@ if __name__ == "__main__":
     C,avg_C = clustering_coefficient(vecinos, D)
     C_k = clustering_coefficient_per_degree(C, D)
     C_k = dict(sorted(C_k.items())) # Ordenar claves de C_k de menor a mayor
-    # No eliminar los de C_k igual a 0
+    # Eliminar los de C_k igual a 0
     C_k = {k: v for k, v in C_k.items() if v != 0}
 
 

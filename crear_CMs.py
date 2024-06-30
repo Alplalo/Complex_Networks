@@ -156,7 +156,7 @@ def contar(filename):
 
 ## Ejecutar el programa
 
-intentos = 5 # Numero de CM a realizar
+intentos = 1 # Numero de CM a realizar
 
 for i in range(intentos):
     assignment_5(i+1)
