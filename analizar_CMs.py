@@ -65,9 +65,9 @@ def deggree_distribution(D):
     
     # Normalizar los valores por el valor máximo
     if max_value > 0:
-        P_K = P_K / max_value
+        P_K_norm = P_K / max_value
     
-    return P_K
+    return P_K_norm, P_K
 
 # Calcular Cumulative degree distribution
 def cumulative_degree_distribution(P_K):
@@ -75,14 +75,7 @@ def cumulative_degree_distribution(P_K):
     for i in range(len(P_K)):
         P_K_cum[i] = sum(P_K[:i+1])  # Calcular la suma acumulada de P_K
         P_K_cum[i] = 1 - P_K_cum[i]
-    
-    # Encontrar el valor máximo
-    max_value = max(P_K_cum)
-    
-    # Normalizar los valores por el valor máximo
-    if max_value > 0:
-        P_K_cum = P_K_cum / max_value
-    
+      
     return P_K_cum
 
 # Calcular Average nearest neighbor degree, suma de vecinos de todos los nodos con k degrees
@@ -97,10 +90,8 @@ def average_nearest_neighbor_degree(vecinos, D):
         sumas[grado] += sum([D[j] for j in vecinos[i]])/grado # Sumar los grados de los vecinos de i
         conteos[grado] += 1
     k_nn = {grado: suma / conteos[grado] for grado, suma in sumas.items()} # Calcular el average nearest neighbor degree
-    max_val = max(k_nn.values())
-    k_nn_normalizado = {grado: valor / max_val for grado, valor in k_nn.items()}
 
-    return k_nn_normalizado
+    return k_nn
 
 
 def clustering_coefficient(vecinos, D):
@@ -145,15 +136,6 @@ def clustering_coefficient_per_degree(C, D):
     for k in C_k:
         C_k[k] /= D.count(k)
     
-    # Encontrar el valor máximo
-    max_value = max(C_k.values())
-    
-    # Normalizar los valores por el valor máximo
-    for k in C_k:
-        if C_k[k] != 0:
-            C_k[k] /= max_value
-        else:
-            C_k[k] = 0
     return C_k
 
 
@@ -169,6 +151,9 @@ os.chdir('..')
 # Calcular el numero de redes a analizar
 num_net = len(files)
 
+k_nn_sum = {}
+C_k_sum = {}
+
 for filename in files:
 
     if __name__ == "__main__":
@@ -177,17 +162,29 @@ for filename in files:
         V, D = contar(filename)
         os.chdir('..')
         vecinos = crear_vecinos(V, D)
-        P_K = deggree_distribution(D)
+        P_K_norm, P_K = deggree_distribution(D)
         P_K_cum = cumulative_degree_distribution(P_K)
         k_nn = average_nearest_neighbor_degree(vecinos, D)
-        k_nn = dict(sorted(k_nn.items())) # Ordenar claves de k_nn de menor a mayor
+
         C,avg_C = clustering_coefficient(vecinos, D)
         C_k = clustering_coefficient_per_degree(C, D)
-        C_k = dict(sorted(C_k.items())) # Ordenar claves de C_k de menor a mayor
-        # Eliminar los de C_k igual a 0
-        C_k = {k: v for k, v in C_k.items() if v != 0}
+        
+        # Sumar k_nn de cada red para calcular el promedio
+        for k, nn in k_nn.items():
+            if k in k_nn_sum:
+                k_nn_sum[k] += nn
+            else:
+                k_nn_sum[k] = nn
+        
+        # Sumar C_k de cada red para calcular el promedio
+        for k, c in C_k.items():
+            if k in C_k_sum:
+                C_k_sum[k] += c
+            else:
+                C_k_sum[k] = c
 
-
+        
+    
         # Print de los resultados
         print('Average clustering coefficient: {:.4f}'.format(avg_C))
 
@@ -197,69 +194,94 @@ for filename in files:
         filename = filename.split(".")[0]
         filename = filename.split("_")[1]
 
-
-        ############ Outputs ################
-
-        # open_file = open(f'outputs/CMs_analisis/degree_distribution_{filename}.dat', 'w')
-        # for i in range(len(P_K)):
-        #     open_file.write('{} {}\n'.format(i, P_K[i]))
-        # open_file.close()
-
-        # open_file = open(f'outputs/CMs_analisis/cumulative_degree_distribution_{filename}.dat', 'w')
-        # for i in range(len(P_K_cum)-1):
-        #     open_file.write('{} {}\n'.format(i, P_K_cum[i]))
-        # open_file.close()
-
-        # open_file = open(f'outputs/CMs_analisis/average_nearest_neighbor_degree_{filename}.dat', 'w')
-        # for k, nn in k_nn.items():
-        #     open_file.write('{} {}\n'.format(k, nn))
-        # open_file.close()
-
-        # open_file = open(f'outputs/CMs_analisis/clustering_coefficient_{filename}.dat', 'w')
-        # for i, c in C.items():
-        #     open_file.write('{} {}\n'.format(i, c))
-        # open_file.close()
+        print('-------------------------------------------------------------------------------------------------')
+        print('-------------------------------------------------------------------------------------------------')
 
 
+# Calcular el promedio de k_nn y C_k
+# Los valores de k_nn y C_K se dividen entre el numero de redes
+k_nn = {k: v / num_net for k, v in k_nn_sum.items()}
+C_k = {k: v / num_net for k, v in C_k_sum.items()}
 
-        ############# Plots ################
+k_nn = dict(sorted(k_nn.items())) # Ordenar claves de k_nn de menor a mayor
+C_k = dict(sorted(C_k.items())) # Ordenar claves de C_k de menor a mayor
 
-        # Plot log P_K vs log k
-        plt.plot(range(len(P_K)-1), P_K[0:-1], 'o', color='black')
-        plt.yscale('log')
-        plt.xscale('log')
-        plt.xlabel('k')
-        plt.ylabel('P(k)')
-        plt.title('Degree distribution')
-        plt.savefig(f'plots/CMs_analisis/degree_distribution_{filename}.png')
-        plt.close()
 
-        # Plot log P_K_cum vs log k
-        plt.plot(range(len(P_K_cum)-1), P_K_cum[0:-1], 'o', color='black')
-        plt.yscale('log')
-        plt.xscale('log')
-        plt.xlabel('k')
-        plt.ylabel('P_cum(k)')
-        plt.title('Cumulative degree distribution')
-        plt.savefig(f'plots/CMs_analisis/cumulative_degree_distribution_{filename}.png')
-        plt.close()
+# Analizar red de referencia
+print('Red de referencia')
+os.chdir('networks')
+filename = 'astro_new.txt'
+V, D = contar(filename)
+os.chdir('..')
+vecinos = crear_vecinos(V, D)
+P_K_norm, P_K = deggree_distribution(D)
+P_K_cum = cumulative_degree_distribution(P_K)
+k_nn_origen = average_nearest_neighbor_degree(vecinos, D)
+C_origen,avg_C_origen = clustering_coefficient(vecinos, D)
+C_k_origen = clustering_coefficient_per_degree(C_origen, D)
+print('-------------------------------------------------------------------------------------------------')
+print('-------------------------------------------------------------------------------------------------')
+# Analizar 1 CM
+print('1 CM')
+os.chdir('CMs')
+filename = 'CMnet_0001.txt'
+V, D = contar(filename)
+os.chdir('..')
+vecinos = crear_vecinos(V, D)
+P_K_norm, P_K = deggree_distribution(D)
+P_K_cum = cumulative_degree_distribution(P_K)
+k_nn_1CM = average_nearest_neighbor_degree(vecinos, D)
+C_1CM,avg_C_1CM = clustering_coefficient(vecinos, D)
+C_k_1CM = clustering_coefficient_per_degree(C_1CM, D)
 
-        # Plot k_nn vs k
-        plt.plot(k_nn.keys(), k_nn.values(), 'o', color='black')
-        plt.yscale('log')
-        plt.xscale('log')
-        plt.xlabel('k')
-        plt.ylabel('k_nn')
-        plt.title('Average nearest neighbor degree')
-        plt.savefig(f'plots/CMs_analisis/average_nearest_neighbor_degree_{filename}.png')
-        plt.close()
+# Ordenar diccionarios
+k_nn = dict(sorted(k_nn.items())) # Ordenar claves de k_nn de menor a mayor
+C_k = dict(sorted(C_k.items())) # Ordenar claves de C_k de menor a mayor
 
-        # Plot C_k vs k
-        plt.plot(C_k.keys(), C_k.values(), 'o', color='black')
-        plt.yscale('log')
-        plt.xscale('log')
-        plt.xlabel('k')
-        plt.ylabel('C(k)')
-        plt.title('Clustering coefficient per degree')
-        plt.savefig(f'plots/CMs_analisis/clustering_coefficient_{filename}.png')
-        plt.close()
+k_nn_origen = dict(sorted(k_nn_origen.items())) # Ordenar claves de k_nn de menor a mayor
+C_k_origen = dict(sorted(C_k_origen.items())) # Ordenar claves de C_k de menor a mayor
+
+k_nn_1CM = dict(sorted(k_nn_1CM.items())) # Ordenar claves de k_nn de menor a mayor
+C_k_1CM = dict(sorted(C_k_1CM.items())) # Ordenar claves de C_k de menor a mayor
+
+# Normalizar los valores de k_nn y C_k por el valor máximo de los 3 diccionarios
+max_val = max(max(k_nn.values()), max(k_nn_origen.values()), max(k_nn_1CM.values()))
+k_nn = {k: v / max_val for k, v in k_nn.items()}
+k_nn_origen = {k: v / max_val for k, v in k_nn_origen.items()}
+k_nn_1CM = {k: v / max_val for k, v in k_nn_1CM.items()}
+
+max_val = max(max(C_k.values()), max(C_k_origen.values()), max(C_k_1CM.values()))
+C_k = {k: v / max_val for k, v in C_k.items()}
+C_k_origen = {k: v / max_val for k, v in C_k_origen.items()}
+C_k_1CM = {k: v / max_val for k, v in C_k_1CM.items()}
+
+# Eliminar los de C_k igual a 0
+C_k = {k: v for k, v in C_k.items() if v != 0}
+C_k_origen = {k: v for k, v in C_k_origen.items() if v != 0}
+C_k_1CM = {k: v for k, v in C_k_1CM.items() if v != 0}
+
+# Plot k_nn vs k
+plt.plot(k_nn_origen.keys(), k_nn_origen.values(), '-', color='gray', label='Red de referencia')
+plt.plot(k_nn_1CM.keys(), k_nn_1CM.values(), '+', color='lightgray', label='1 CM')
+plt.plot(k_nn.keys(), k_nn.values(), '-', color='black', label='100 CMs')
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('k')
+plt.ylabel('k_nn')
+plt.title('Average nearest neighbor degree')
+plt.legend()
+plt.savefig(f'plots/CMs_analisis/average_nearest_neighbor_degree.png')
+plt.close()
+
+# Plot C_k vs k
+plt.plot(C_k_origen.keys(), C_k_origen.values(), '-', color='gray', label='Red de referencia')
+plt.plot(C_k_1CM.keys(), C_k_1CM.values(), '+', color='lightgray', label='1 CM')
+plt.plot(C_k.keys(), C_k.values(), '-', color='black', label='100 CMs')
+plt.yscale('log')
+plt.xscale('log')
+plt.xlabel('k')
+plt.ylabel('C(k)')
+plt.title('Clustering coefficient per degree')
+plt.legend()
+plt.savefig(f'plots/CMs_analisis/clustering_coefficient.png')
+plt.close()

@@ -163,9 +163,10 @@ def contar(filename):
 
 inicio = time.time()
 
-intentos = 1 # Numero de CM a realizar
+intentos = 20 # Numero de CM a realizar
 
 for i in range(intentos):
+    print(f'CM {i+1}/{intentos} creandose...')
     assignment_5(i+1)
     print(f'CM {i+1}/{intentos} completada.')
     

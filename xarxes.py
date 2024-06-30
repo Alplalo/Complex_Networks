@@ -74,9 +74,9 @@ def deggree_distribution(D):
     
     # Normalizar los valores por el valor máximo
     if max_value > 0:
-        P_K = P_K / max_value
+        P_K_norm = P_K / max_value
     
-    return P_K
+    return P_K_norm, P_K
 
 # Calcular Cumulative degree distribution
 def cumulative_degree_distribution(P_K):
@@ -84,14 +84,7 @@ def cumulative_degree_distribution(P_K):
     for i in range(len(P_K)):
         P_K_cum[i] = sum(P_K[:i+1])  # Calcular la suma acumulada de P_K
         P_K_cum[i] = 1 - P_K_cum[i]
-    
-    # Encontrar el valor máximo
-    max_value = max(P_K_cum)
-    
-    # Normalizar los valores por el valor máximo
-    if max_value > 0:
-        P_K_cum = P_K_cum / max_value
-    
+      
     return P_K_cum
 
 # Calcular Average nearest neighbor degree, suma de vecinos de todos los nodos con k degrees
@@ -171,7 +164,7 @@ if __name__ == "__main__":
 
     V, D = contar(filename)
     vecinos = crear_vecinos(V, D)
-    P_K = deggree_distribution(D)
+    P_K_norm, P_K = deggree_distribution(D)
     P_K_cum = cumulative_degree_distribution(P_K)
     k_nn = average_nearest_neighbor_degree(vecinos, D)
     k_nn = dict(sorted(k_nn.items())) # Ordenar claves de k_nn de menor a mayor
@@ -223,7 +216,7 @@ if __name__ == "__main__":
     ############# Plots ################
 
     # Plot log P_K vs log k
-    plt.plot(range(len(P_K)-1), P_K[0:-1], 'o', color='black')
+    plt.plot(range(len(P_K_norm)-1), P_K_norm[0:-1], 'o', color='black')
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel('k')
