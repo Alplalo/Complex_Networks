@@ -90,25 +90,44 @@ def average_nearest_neighbor_degree(vecinos, D):
         sumas[grado] += sum([D[j] for j in vecinos[i]])/grado # Sumar los grados de los vecinos de i
         conteos[grado] += 1
     k_nn = {grado: suma / conteos[grado] for grado, suma in sumas.items()} # Calcular el average nearest neighbor degree
-    return k_nn
+    max_val = max(k_nn.values())
+    k_nn_normalizado = {grado: valor / max_val for grado, valor in k_nn.items()}
 
-# Calcula el average clustering coefficient for each node
+    return k_nn_normalizado
+
+
 def clustering_coefficient(vecinos, D):
-    C = {} # Diccionario para guardar el clustering coefficient de cada nodo
-    triangles = [0]*len(D) # Lista para guardar el numero de triangulos de cada nodo
-    for i in range(len(D)): # Recorrer todos los nodos
+
+    # Inicializar diccionario de clustering y variables para contar triangulos
+    C = {}
+    total_tri = 0
+    cerrados_tri = 0
+    
+    # Calcular el clustering coefficient de cada nodo
+    for i in range(len(D)):
         vecinos_i = vecinos[i] # Vecinos del nodo i
-        vecinos_i = [v for v in vecinos_i if v > i] # Solo vecinos con indice mayor que i para no contar dos veces el mismo triangulo
-        if len(vecinos_i) < 2: # Si el nodo no tiene suficientes vecinos para formar un triangulo
+        if len(vecinos_i) < 2: # Si el nodo i no tiene vecinos para formar triangulos
             C[i] = 0
-        else:
-            triangles[i] = 0 # Contador de triangulos
-            for j in vecinos_i:
-                for k in vecinos_i:
-                    if k in vecinos[j]: # Si j y k son vecinos
-                        triangles[i] += 1 
-            C[i] = 2*triangles[i]/(len(vecinos_i)*(len(vecinos_i)-1)) # Calcular el clustering coefficient
-    return C, triangles
+            continue
+        
+        contar_pos_tri = 0 # Contar posibles triangulos de un nodo
+        contar_triangulos = 0 # Contar triangulos cerrados de un nodo
+        
+        for j in range(len(vecinos_i)): # Recorrer nodos vecinos
+            for k in range(j + 1, len(vecinos_i)):
+                contar_pos_tri += 1 # Contar posibles triangulos
+                if vecinos_i[k] in vecinos[vecinos_i[j]]: # Si hay un nodo k en los vecinos de j
+                    contar_triangulos += 1 # Contar triangulos cerrados
+        
+        C[i] = contar_triangulos / contar_pos_tri if contar_pos_tri > 0 else 0
+        total_tri += contar_pos_tri # Sumar de posibles triangulos de todos los nodos
+        cerrados_tri += contar_triangulos # Sumar triangulos cerrados de todos los nodos
+    
+    # Calcular el clustering coefficient medio, triángulos cerrados entre todos los triángulos abiertos y cerrados
+    avg_C = cerrados_tri / total_tri if total_tri > 0 else 0
+    print('Triangulos: ',cerrados_tri/3)
+    return C, avg_C
+
 
 def clustering_coefficient_per_degree(C, D):
     C_k = {}
@@ -120,22 +139,6 @@ def clustering_coefficient_per_degree(C, D):
         C_k[k] /= D.count(k)
     return C_k
 
-def average_clustering_coefficient(C):
-    return sum(C.values())/(len(C))
-
-# def average_clustering_coefficient(C):
-#     non_zero_C = [c for c in C.values() if c > 0]
-#     if len(non_zero_C) == 0:
-#         return 0
-#     return sum(non_zero_C) / len(non_zero_C)
-
-def diferentes_k(D):
-    k = set(D) # Quitar repetidos
-    k = list(k)
-    k.sort() # Ordenar k
-    return k
-
-
 
 if __name__ == "__main__":
 ############ Programa principal #############
@@ -145,14 +148,20 @@ if __name__ == "__main__":
     P_K = deggree_distribution(D)
     P_K_cum = cumulative_degree_distribution(P_K)
     k_nn = average_nearest_neighbor_degree(vecinos, D)
-    C,triangles = clustering_coefficient(vecinos, D)
+    k_nn = dict(sorted(k_nn.items())) # Ordenar claves de k_nn de menor a mayor
+    C,avg_C = clustering_coefficient(vecinos, D)
     C_k = clustering_coefficient_per_degree(C, D)
-    C_avg = average_clustering_coefficient(C)
+    C_k = dict(sorted(C_k.items())) # Ordenar claves de C_k de menor a mayor
+    # No eliminar los de C_k igual a 0
+    C_k = {k: v for k, v in C_k.items() if v != 0}
 
 
     # Print de los resultados
-    print('Triangulos: ',np.sum(triangles)/2)
-    print('Average clustering coefficient: {:.4f}'.format(C_avg/2))
+    print('Degree max: ',max(D))
+    print('Degree min: ',min(D))
+    print('Average clustering coefficient: {:.6f}'.format(avg_C))
+    print('Clustering coefficient max: ',max(C.values()))
+    print('Clustering coefficient min: ',min(C.values()))
 
 
     # Nombre carpeta datos y plots
@@ -163,25 +172,25 @@ if __name__ == "__main__":
 
     ############ Outputs ################
 
-    open_file = open(f'outputs/{filename}/degree_distribution.dat', 'w')
-    for i in range(len(P_K)):
-        open_file.write('{} {}\n'.format(i, P_K[i]))
-    open_file.close()
+    # open_file = open(f'outputs/{filename}/degree_distribution.dat', 'w')
+    # for i in range(len(P_K)):
+    #     open_file.write('{} {}\n'.format(i, P_K[i]))
+    # open_file.close()
 
-    open_file = open(f'outputs/{filename}/cumulative_degree_distribution.dat', 'w')
-    for i in range(len(P_K_cum)-1):
-        open_file.write('{} {}\n'.format(i, P_K_cum[i]))
-    open_file.close()
+    # open_file = open(f'outputs/{filename}/cumulative_degree_distribution.dat', 'w')
+    # for i in range(len(P_K_cum)-1):
+    #     open_file.write('{} {}\n'.format(i, P_K_cum[i]))
+    # open_file.close()
 
-    open_file = open(f'outputs/{filename}/average_nearest_neighbor_degree.dat', 'w')
-    for k, nn in k_nn.items():
-        open_file.write('{} {}\n'.format(k, nn))
-    open_file.close()
+    # open_file = open(f'outputs/{filename}/average_nearest_neighbor_degree.dat', 'w')
+    # for k, nn in k_nn.items():
+    #     open_file.write('{} {}\n'.format(k, nn))
+    # open_file.close()
 
-    open_file = open(f'outputs/{filename}/clustering_coefficient.dat', 'w')
-    for i, c in C.items():
-        open_file.write('{} {}\n'.format(i, c))
-    open_file.close()
+    # open_file = open(f'outputs/{filename}/clustering_coefficient.dat', 'w')
+    # for i, c in C.items():
+    #     open_file.write('{} {}\n'.format(i, c))
+    # open_file.close()
 
 
 
@@ -208,7 +217,7 @@ if __name__ == "__main__":
     plt.close()
 
     # Plot k_nn vs k
-    plt.plot(k_nn.keys(), k_nn.values(), 'o', color='black')
+    plt.plot(k_nn.keys(), k_nn.values(), '-', color='black')
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel('k')
@@ -218,7 +227,7 @@ if __name__ == "__main__":
     plt.close()
 
     # Plot C_k vs k
-    plt.plot(C_k.keys(), C_k.values(), 'o', color='black')
+    plt.plot(C_k.keys(), C_k.values(), '-', color='black')
     plt.yscale('log')
     plt.xscale('log')
     plt.xlabel('k')
