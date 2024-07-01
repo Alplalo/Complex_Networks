@@ -1,16 +1,25 @@
+# ---------- XARXES COMPLEXES --------------
+# -------------- K_CORE --------------------
+# ----------- ALBERT PLAZAS ----------------
+
+############# Librerias ################
+
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import sys
 import os
 
-# Leer la red
+############# Argumentos ################
+
 filename = sys.argv[1] # Guardar el nombre del archivo de datos
 
-G = nx.read_edgelist(filename)
+########## Programa principal ###########
 
-filename = filename.split('/')[-1].split('.')[0]
-os.makedirs(f'plots/kcore/{filename}', exist_ok=True)
+G = nx.read_edgelist(filename) # Leer la red
+
+filename = filename.split('/')[-1].split('.')[0] # Nombre del archivo sin la ruta ni la extensión
+os.makedirs(f'plots/kcore/{filename}', exist_ok=True) # Crear carpeta para guardar los plots
 
 # Calcular el core number de los nodos
 core_number = nx.core_number(G)
@@ -33,7 +42,8 @@ for k in k_levels:
 # Definir colores para cada capa de k-core
 colors = plt.cm.rainbow(np.linspace(0, 1, len(k_levels)))
 
-# Plot
+############# Plots ################
+
 plt.figure(figsize=(12, 12))
 
 for i, k in enumerate(k_levels):

@@ -1,12 +1,19 @@
+# ---------- XARXES COMPLEXES --------------
+# ------------- CREAR CMs ------------------
+# ----------- ALBERT PLAZAS ----------------
+
+############# Librerias ################
+
 import sys
 import os
 import numpy as np
 import time
 
-# ------------------ Argumentos ------------------
+############# Argumentos ################
+
 filename = sys.argv[1]
 
-# ------------------ Funciones ------------------
+############# Funciones ################
 
 def assignment_5(intentos,filename=sys.argv[1]):
     filename = sys.argv[1] # Guardar el nombre del archivo de datos
@@ -58,6 +65,7 @@ def assignment_5(intentos,filename=sys.argv[1]):
     write_file.close()
 
     ####### Copia de programa RETOCAR #######
+
     # ------------------ Argumentos ------------------
 
     filename = 'assignment_5.txt'
@@ -104,7 +112,7 @@ def assignment_5(intentos,filename=sys.argv[1]):
     # Restar a cada nodo el primer calor de la columna 1 para que empiecen en 0, en las columnas 1 y 2
     lines = [f'{int(line.split()[0])-int(lines[0].split()[0])}\t{int(line.split()[1])-int(lines[0].split()[0])}\n' for line in lines]
 
-    # ------------------ Output ------------------
+    ############ Outputs ################
 
     # Guardo lo que hay delante del . en el nombre del archivo para el nuevo archivo
     filename = filename.split('.')[0] # Guardar el nombre del archivo sin la extension
@@ -158,7 +166,7 @@ def contar(filename):
 
 
 
-## Ejecutar el programa
+############ Programa principal #############
 
 
 inicio = time.time()
