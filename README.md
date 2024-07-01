@@ -7,7 +7,7 @@ Este repositorio contiene herramientas y scripts para analizar cualquier tipo de
 
 ## Introducción
 
-El objetivo de este proyecto es proporcionar una serie de herramientas para la manipulación, análisis y simulación de redes. Utilizando scripts en Python y un Makefile para automatizar tareas, se puede procesar un archivo de red, preparar las redes con metodo Configurational model (CMs), analizarlas y ejecutar un modelo SIS (Susceptible-Infected-Susceptible) sobre la red.
+El objetivo de este proyecto es proporcionar una serie de herramientas para la manipulación, análisis y simulación de redes. Utilizando scripts en Python y un Makefile para automatizar tareas, se puede procesar un archivo de red, preparar las redes con método Configurational Model (CMs), analizarlas y ejecutar un modelo SIS (Susceptible-Infected-Susceptible) sobre la red.
 
 ## Estructura del Proyecto
 
