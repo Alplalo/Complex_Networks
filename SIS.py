@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from numba import jit
 import sys
 import os
+import time
 
 ############# Funciones ################
 
@@ -23,6 +24,8 @@ def gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time):
     prevalence = [len(infected) / N] # Prevalencia inicial
     
     t = 0
+    next_print_time = max_time * 0.1
+    contador = 0
     while t < max_time and infected:
         Eact = sum(1 for i in infected for j in G.neighbors(i) if j in susceptible) # Número de enlaces activos
         nI = len(infected) # Número de infectados
@@ -36,6 +39,11 @@ def gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time):
         rate = nI + lam * Eact # Tasa de eventos
         tau = np.random.exponential(1 / rate) # Tiempo hasta el próximo evento
         t += tau # Avanzar el tiempo
+
+        if t >= next_print_time:
+            contador += 1
+            print(f"Tiempo: {t:.2f} ({contador}0% calculado)")
+            next_print_time += max_time * 0.1
         
         if np.random.rand() < p_recovery:
             node_to_recover = np.random.choice(list(infected)) # Elegir un nodo para recuperar
@@ -77,11 +85,12 @@ max_time = 15 # Tiempo máximo de simulación
 # Ejecutar simulaciones para diferentes valores de beta
 results = [] # Guardar los resultados de las simulaciones
 lamb_prevalence = [] # Guardar la prevalencia final en función de lambda
-
+print('\n')
 print('###################################')
 print('##### Inicio de simulaciones ######')
 print('###################################')
-
+print('\n')
+tiempo_inicial = time.time()
 ############# Simulaciones ################
 
 for lam in lambdas:
@@ -95,7 +104,9 @@ for lam in lambdas:
     print(f'Lambda= {lam:.4f} acabado')
     print('-----------------------------------')
     
+tiempo_final = time.time()
 
+print('tiempo de ejecución: ', tiempo_final - tiempo_inicial)
 
 ############# Plots ################
 
