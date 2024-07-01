@@ -116,8 +116,4 @@ Para ejecutar las diferentes tareas, utiliza las siguientes reglas del Makefile:
 
 ## Contribuciones
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request para discutir cualquier cambio o mejora.
-
----
-
-Con este README, tendrás una guía clara sobre cómo utilizar y contribuir a este proyecto de análisis de redes.
+[Albert Plazas](https://github.com/Alplalo)
