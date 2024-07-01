@@ -47,7 +47,7 @@ def contar(filename):
     # Print de los resultados
     print('Nodes: ',len(k_i)) # Numero de nodos
     print('E :', 0.5*sum(k_i)) # Numero de aristas
-    print('<k> : {:.4f}'.format(sum(k_i)/len(k_i))) # Grado medio
+    print('<k> : {:.5f}'.format(sum(k_i)/len(k_i))) # Grado medio
 
     return vecinos, k_i
 
@@ -179,8 +179,8 @@ if __name__ == "__main__":
     print('Degree max: ',max(D))
     print('Degree min: ',min(D))
     print('Average clustering coefficient: {:.6f}'.format(avg_C))
-    print('Clustering coefficient max: ',max(C.values()))
-    print('Clustering coefficient min: ',min(C.values()))
+    print('Clustering coefficient max: {:.6f}'.format(max(C.values())))
+    print('Clustering coefficient min: {:.6f}'.format(min(C.values())))
 
 
     # Nombre carpeta datos y plots
