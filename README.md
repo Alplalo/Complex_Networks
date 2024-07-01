@@ -3,7 +3,7 @@
 Este repositorio contiene herramientas y scripts para analizar cualquier tipo de red utilizando diferentes modelos y técnicas. A continuación, se describen los diferentes componentes del proyecto y cómo utilizarlos.
 
 > [!WARNING]  
-> Las redes que contengan nodos desconectados puden dar lugar a problemas en el calculo de las propiedades de la red.
+> Las redes que contienen nodos desconectados pueden dar lugar a problemas en el cálculo de las propiedades de la red.
 
 ## Introducción
 
