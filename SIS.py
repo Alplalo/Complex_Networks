@@ -31,6 +31,7 @@ def gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time):
         nI = len(infected) # Número de infectados
         
         if nI + lam * Eact == 0:
+            print('No quedan nodos infectados')
             break
         
         p_recovery = nI / (nI + lam * Eact) # Probabilidad de recuperación
@@ -72,6 +73,10 @@ filename = sys.argv[1] # Guardar el nombre del archivo de datos
 # Leer una red real
 G = nx.read_edgelist(filename, create_using=nx.Graph(), nodetype=int)
 G = nx.convert_node_labels_to_integers(G, first_label=0)
+print('\n')
+print('#########################################')
+print('######### Información de la red #########')
+print('#########################################')
 
 print('Número de nodos:', G.number_of_nodes())
 print('Número de enlaces:', G.number_of_edges())
@@ -89,11 +94,12 @@ print('\n')
 print('###################################')
 print('##### Inicio de simulaciones ######')
 print('###################################')
-print('\n')
 tiempo_inicial = time.time()
 ############# Simulaciones ################
 
 for lam in lambdas:
+    print('-----------------------------------')
+    print(f'Simulando: Lambda= {lam:.4f}')
     times, prevalence = gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time) # Simulación
     results.append((lam, times, prevalence)) # Guardar los resultados
     # print(len(prevalence))
