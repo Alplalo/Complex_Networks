@@ -7,7 +7,7 @@ Este repositorio contiene herramientas y scripts para analizar cualquier tipo de
 
 ## Introducción
 
-El objetivo de este proyecto es proporcionar una serie de herramientas para la manipulación, análisis y simulación de redes. Utilizando scripts en Python y un Makefile para automatizar tareas, se puede procesar un archivo de red, preparar matrices de conectividad (CMs), analizarlas y ejecutar un modelo SIS (Susceptible-Infected-Susceptible) sobre la red.
+El objetivo de este proyecto es proporcionar una serie de herramientas para la manipulación, análisis y simulación de redes. Utilizando scripts en Python y un Makefile para automatizar tareas, se puede procesar un archivo de red, preparar las redes con metodo Configurational model (CMs), analizarlas y ejecutar un modelo SIS (Susceptible-Infected-Susceptible) sobre la red.
 
 ## Estructura del Proyecto
 
@@ -59,7 +59,7 @@ p5: $(INPUT_FILE_NEW) crear_CMs.py
 	python3 crear_CMs.py $(INPUT_FILE_NEW)
 ```
 
-Elimina el directorio `CMs` si existe y ejecuta `crear_CMs.py` para preparar las matrices de conectividad.
+Elimina el directorio `CMs` si existe y ejecuta `crear_CMs.py` para preparar las redes CM.
 
 #### Análisis de CMs
 
@@ -108,8 +108,8 @@ Para ejecutar las diferentes tareas, utiliza las siguientes reglas del Makefile:
 
 - **Procesar archivo de entrada**: `make $(INPUT_FILE_NEW)`
 - **Ejecutar análisis con xarxes.py**: `make xpy`
-- **Preparar matrices de conectividad**: `make p5`
-- **Analizar matrices de conectividad**: `make a5`
+- **Preparar redes CM**: `make p5`
+- **Analizar redes CM**: `make a5`
 - **Ejecutar modelo SIS**: `make sis`
 - **Limpiar entorno**: `make clean5`
 - **Mostrar ayuda**: `make help`
