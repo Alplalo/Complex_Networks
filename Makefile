@@ -1,6 +1,6 @@
 ########### Variables ###########
 
-INPUT = powergrid.txt
+INPUT = astro.txt
 INPUT_FILE = networks/$(INPUT)
 INPUT_FILE_NEW = $(INPUT_FILE:.txt=_new.txt)
 DIR = $(INPUT:.txt=_new)
@@ -37,6 +37,11 @@ sis: $(INPUT_FILE_NEW) SIS.py
 	cmd /C if not exist plots\\SIS md plots\\SIS
 	python3 SIS.py $(INPUT_FILE_NEW)
 
+# Ejecución del modelo k-core
+kcore: $(INPUT_FILE_NEW) kcore.py
+	cmd /C if not exist plots\\kcore md plots\\kcore
+	python3 kcore.py $(INPUT_FILE_NEW)
+
 # Limpiar directorios CMs
 clean5:
 	cmd /C if exist CMs rmdir /S /Q CMs
@@ -47,4 +52,5 @@ help:
 	@echo "p5 - Prepara el entorno eliminando el directorio CMs si existe y luego ejecuta 'crear_CMs.py' para preparar los CMs."
 	@echo "a5 - Verifica y crea los directorios necesarios para los plots y outputs de los CMs, luego ejecuta 'analizar_CMs.py' para el análisis."
 	@echo "sis - Verifica y crea el directorio necesario para los plots del modelo SIS, luego ejecuta 'SIS.py' con el archivo de entrada procesado."
+	@echo "kcore - Verifica y crea el directorio necesario para los plots del modelo k-core, luego ejecuta 'kcore.py' con el archivo de entrada procesado."
 	@echo "clean5 - Elimina el directorio CMs si existe, limpiando el entorno de trabajo."
