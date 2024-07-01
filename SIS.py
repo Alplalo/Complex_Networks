@@ -82,7 +82,7 @@ print('Número de nodos:', G.number_of_nodes())
 print('Número de enlaces:', G.number_of_edges())
 
 # Parámetros del modelo
-lambdas = [0.01, 0.1, 0.5, 1, 2, 3,4] # Tasa de infección
+lambdas = [0.001,0.005,0.01, 0.05, 0.08, 0.1, 0.5, 1, 2, 3, 4] # Tasa de infección
 sigma = 1  # Tasa de recuperación
 initial_infected = np.random.choice(G.nodes(), size=50, replace=False) # Nodos infectados iniciales
 max_time = 15 # Tiempo máximo de simulación
