@@ -1,6 +1,6 @@
 ########### Variables ###########
 
-INPUT = astro.txt
+INPUT = CA.txt
 INPUT_FILE = networks/$(INPUT)
 INPUT_FILE_NEW = $(INPUT_FILE:.txt=_new.txt)
 DIR = $(INPUT:.txt=_new)

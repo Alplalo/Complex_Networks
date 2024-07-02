@@ -83,8 +83,8 @@ print('Número de nodos:', G.number_of_nodes())
 print('Número de enlaces:', G.number_of_edges())
 
 # Parámetros del modelo
-lambdas = np.arange(0.1, 0.55, 0.05).tolist() # Tasa de infección
-lambdas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.8, 1,1.5, 2]
+lambdas = np.arange(0.01, 0.09, 0.01).tolist() # Tasa de infección
+# lambdas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.8, 1,1.5, 2]
 sigma = 1  # Tasa de recuperación
 initial_infected = np.random.choice(G.nodes(), size=50, replace=False) # Nodos infectados iniciales
 max_time = 15 # Tiempo máximo de simulación
@@ -100,7 +100,7 @@ tiempo_inicial = time.time()
 ############# Simulaciones ################
 
 # Número de repeticiones por cada valor de lambda
-num_repeticiones = 4
+num_repeticiones = 10
 
 # Diccionario para guardar los tiempos de curación para cada lambda
 tiempos_curacion_por_lambda = {lam: [] for lam in lambdas}
@@ -116,7 +116,7 @@ for lam in lambdas:
     print('-----------------------------------')
 
     # Guardar ultimos resultados
-    last_prevalence = prevalence[-20:]
+    last_prevalence = prevalence[-100:]
     last_prevalence = sum(last_prevalence)/len(last_prevalence)
     lamb_prevalence.append([lam, last_prevalence])
     results.append((lam, times, prevalence))
@@ -139,30 +139,29 @@ os.makedirs(f'plots/SIS/{filename}', exist_ok=True)
 
 ############# Plots ################
 if num_repeticiones > 1:
-    plt.title('Densidad de probabilidad del tiempo de curación en función de lambda')
-    plt.xlabel('Tiempo de curación')
-    plt.ylabel('Densidad de probabilidad')
-    # plt.legend()
+    plt.xlabel('t')
+    plt.ylabel('p(t)')
+    plt.legend()
     plt.savefig(f'plots/SIS/{filename}/densidad_tiempo_curacion.png')
 
 
 
-# Graficar los resultados
-plt.figure(figsize=(10,6))
-for lam, times, prevalence in results:
-    plt.plot(times, prevalence, label=r'$\lambda= {:.2f}$'.format(lam))
-plt.xlabel('t')
-plt.ylabel(r'$\rho$')
-plt.legend()
-plt.savefig(f'plots/SIS/{filename}/dinamica_SIS.png')
-# plt.show()
+# # Graficar los resultados
+# plt.figure(figsize=(10,6))
+# for lam, times, prevalence in results:
+#     plt.plot(times, prevalence, label=r'$\lambda= {:.2f}$'.format(lam))
+# plt.xlabel('t')
+# plt.ylabel(r'$\rho$')
+# plt.legend()
+# plt.savefig(f'plots/SIS/{filename}/dinamica_SIS.png')
+# # plt.show()
 
 
-# Graficar la prevalencia final en función de lambda
-lamb_prevalence = np.array(lamb_prevalence)
-plt.figure(figsize=(10,6))
-plt.plot(lamb_prevalence[:,0], lamb_prevalence[:,1], 'o-', color='black')
-plt.xlabel(r'$\lambda$')
-plt.ylabel(r'$\rho$')
-plt.savefig(f'plots/SIS/{filename}/lambdas.png')
-# plt.show()
+# # Graficar la prevalencia final en función de lambda
+# lamb_prevalence = np.array(lamb_prevalence)
+# plt.figure(figsize=(10,6))
+# plt.plot(lamb_prevalence[:,0], lamb_prevalence[:,1], 'o-', color='black')
+# plt.xlabel(r'$\lambda$')
+# plt.ylabel(r'$\rho$')
+# plt.savefig(f'plots/SIS/{filename}/lambdas.png')
+# # plt.show()
