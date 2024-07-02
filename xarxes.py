@@ -7,6 +7,7 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
 
 ############# Argumentos ################
@@ -256,6 +257,37 @@ if __name__ == "__main__":
     plt.close()
 
 
+def power_law_dist(k, gamma):
+    C = 1  # Forzar C a 1
+    return C * k ** (-gamma)
+
+def fit_power_law_degree_distribution(D):
+    D = np.array(D)
+    D = D[D > 0]  # Asegurarse de que no hay valores <= 0
+    counts = np.bincount(D)  # Contar ocurrencias de cada grado
+    k_values = np.arange(len(counts))  # Grados
+    probabilities = counts / sum(counts)  # Calcular probabilidades
+
+    # Aplicar la máscara para k_values >= 1 (ajustar según sea necesario)
+    mask = k_values >= 1
+    params, _ = curve_fit(power_law_dist, k_values[mask], probabilities[mask], p0=[1])
+    gamma = params[0]
+
+    return gamma, k_values[mask], probabilities[mask]
+
+# Asumiendo que D es tu conjunto de datos
+gamma, k_values_masked, probabilities_masked = fit_power_law_degree_distribution(D)
+print('gamma:', gamma)
+
+# Graficar la distribución de grados original y la ajustada usando los valores filtrados por la máscara
+plt.plot(k_values_masked, probabilities_masked, 'o', color='black', label='Data')
+plt.plot(k_values_masked, power_law_dist(k_values_masked, gamma), '-', color='red', label=f'Fit: $\\gamma={gamma:.2f}$')
+plt.xlabel('k')
+plt.ylabel('P(k)')
+# plt.title('Power Law Degree Distribution Fit')
+plt.legend()
+plt.savefig(f'plots/{filename}/power_law_degree_distribution_fit.png')
+# plt.show()
 
 
 
