@@ -282,6 +282,7 @@ print('gamma:', gamma)
 # Graficar la distribución de grados original y la ajustada usando los valores filtrados por la máscara
 plt.plot(k_values_masked, probabilities_masked, 'o', color='black', label='Data')
 plt.plot(k_values_masked, power_law_dist(k_values_masked, gamma), '-', color='red', label=f'Fit: $\\gamma={gamma:.2f}$')
+plt.ylim(0,0.14)
 plt.xlabel('k')
 plt.ylabel('P(k)')
 # plt.title('Power Law Degree Distribution Fit')
