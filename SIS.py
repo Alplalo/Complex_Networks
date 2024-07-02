@@ -11,6 +11,7 @@ from numba import jit
 import sys
 import os
 import time
+from scipy.stats import gaussian_kde
 
 ############# Funciones ################
 
@@ -43,7 +44,7 @@ def gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time):
 
         if t >= next_print_time:
             contador += 1
-            print(f"Tiempo: {t:.2f} ({contador}0% calculado)")
+            # print(f"Tiempo: {t:.2f} ({contador}0% calculado)")
             next_print_time += max_time * 0.1
         
         if np.random.rand() < p_recovery:
@@ -82,7 +83,8 @@ print('Número de nodos:', G.number_of_nodes())
 print('Número de enlaces:', G.number_of_edges())
 
 # Parámetros del modelo
-lambdas = [0.001,0.005,0.01, 0.05, 0.08, 0.1, 0.5, 1, 2, 3, 4] # Tasa de infección
+lambdas = np.arange(0.1, 0.55, 0.05).tolist() # Tasa de infección
+lambdas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.8, 1,1.5, 2]
 sigma = 1  # Tasa de recuperación
 initial_infected = np.random.choice(G.nodes(), size=50, replace=False) # Nodos infectados iniciales
 max_time = 15 # Tiempo máximo de simulación
@@ -97,27 +99,53 @@ print('###################################')
 tiempo_inicial = time.time()
 ############# Simulaciones ################
 
+# Número de repeticiones por cada valor de lambda
+num_repeticiones = 4
+
+# Diccionario para guardar los tiempos de curación para cada lambda
+tiempos_curacion_por_lambda = {lam: [] for lam in lambdas}
+
 for lam in lambdas:
     print('-----------------------------------')
     print(f'Simulando: Lambda= {lam:.4f}')
-    times, prevalence = gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time) # Simulación
-    results.append((lam, times, prevalence)) # Guardar los resultados
-    # print(len(prevalence))
-    last_prevalence = prevalence[-20:] # Prevalencia final
-    last_prevalence = sum(last_prevalence) / len(last_prevalence) # Promedio de la prevalencia final
-    # Guardar en 2D vector lambda, prevalencia final
-    lamb_prevalence.append([lam, last_prevalence]) # Guardar la prevalencia final en función de lambda
+    for _ in range(num_repeticiones):
+        times, prevalence = gillespie_SIS_stochastic(G, lam, sigma, initial_infected, max_time)
+        if times:  # Asegurarse de que times no esté vacío
+            tiempos_curacion_por_lambda[lam].append(times[-1])  # Guardar el último tiempo de curación
     print(f'Lambda= {lam:.4f} acabado')
     print('-----------------------------------')
-    
+
+    # Guardar ultimos resultados
+    last_prevalence = prevalence[-20:]
+    last_prevalence = sum(last_prevalence)/len(last_prevalence)
+    lamb_prevalence.append([lam, last_prevalence])
+    results.append((lam, times, prevalence))
+
+if num_repeticiones > 1:
+    # Calcular la densidad de probabilidad para cada lambda
+    for lam, tiempos_curacion in tiempos_curacion_por_lambda.items():
+        if tiempos_curacion:  # Asegurarse de que haya tiempos de curación
+            densidad = gaussian_kde(tiempos_curacion)
+            xs = np.linspace(min(tiempos_curacion), max(tiempos_curacion), 200)
+            plt.plot(xs, densidad(xs), label=f'Lambda={lam:.4f}')
+
 tiempo_final = time.time()
 
 print('tiempo de ejecución: ', tiempo_final - tiempo_inicial)
 
-############# Plots ################
-
 filename = filename.split('/')[-1].split('.')[0]
 os.makedirs(f'plots/SIS/{filename}', exist_ok=True)
+
+
+############# Plots ################
+if num_repeticiones > 1:
+    plt.title('Densidad de probabilidad del tiempo de curación en función de lambda')
+    plt.xlabel('Tiempo de curación')
+    plt.ylabel('Densidad de probabilidad')
+    # plt.legend()
+    plt.savefig(f'plots/SIS/{filename}/densidad_tiempo_curacion.png')
+
+
 
 # Graficar los resultados
 plt.figure(figsize=(10,6))
@@ -128,6 +156,7 @@ plt.ylabel(r'$\rho$')
 plt.legend()
 plt.savefig(f'plots/SIS/{filename}/dinamica_SIS.png')
 # plt.show()
+
 
 # Graficar la prevalencia final en función de lambda
 lamb_prevalence = np.array(lamb_prevalence)

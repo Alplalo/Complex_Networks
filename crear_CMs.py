@@ -38,8 +38,8 @@ def assignment_5(intentos,filename=sys.argv[1]):
         
         if i != j:
             edge = frozenset([nodes[i], nodes[j]])
-            if ((len(nodes) in {2, 4} and nodes[i] == nodes[j]) or 
-                (len(nodes) in {2, 4} and edge in edges)):
+            if ((len(nodes) in range(2,15,2) and nodes[i] == nodes[j]) or 
+                (len(nodes) in range(2,5,2) and edge in edges)):
                 nodes = back_nodes.copy()
                 edges.clear()
                 continue
@@ -48,7 +48,7 @@ def assignment_5(intentos,filename=sys.argv[1]):
                 edges.add(edge)
                 nodes.pop(max(i, j))
                 nodes.pop(min(i, j))
-                # print(len(nodes))
+                print(len(nodes))
 
     edges = [list(edge) for edge in edges]
 
@@ -171,7 +171,7 @@ def contar(filename):
 
 inicio = time.time()
 
-intentos = 20 # Numero de CM a realizar
+intentos = 1 # Numero de CM a realizar
 
 for i in range(intentos):
     print(f'CM {i+1}/{intentos} creandose...')
