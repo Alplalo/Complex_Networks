@@ -22,7 +22,7 @@ El objetivo de este proyecto es proporcionar una serie de herramientas para la m
 
 ### Variables en el Makefile
 
-- **INPUT**: Nombre del archivo de red de entrada (por defecto `powergrid.txt`).
+- **INPUT**: Nombre del archivo de red de entrada (por defecto `astro.txt`).
 - **INPUT_FILE**: Ruta completa al archivo de entrada dentro del directorio `networks`.
 - **INPUT_FILE_NEW**: Ruta al archivo de entrada procesado.
 - **DIR**: Nombre del directorio basado en el archivo de entrada.
